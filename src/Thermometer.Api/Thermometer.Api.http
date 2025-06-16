@@ -1,6 +1,20 @@
-@Thermometer.Api_HostAddress = http://localhost:5274
+@Thermometer.Api_HostAddress = http://localhost:8080
 
-GET {{Thermometer.Api_HostAddress}}/weatherforecast/
+GET {{Thermometer.Api_HostAddress}}/check-status
 Accept: application/json
+
+###
+
+POST {{Thermometer.Api_HostAddress}}/execute/set-temperature
+Content-Type: application/json
+
+{
+  "input": 22.5
+}
+
+###
+
+POST {{Thermometer.Api_HostAddress}}/register
+Content-Type: application/json
 
 ###

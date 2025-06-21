@@ -12,7 +12,7 @@ public class DomoticASWHttpProtocol(IThermometerService thermometerService) : Co
     [HttpGet("check-status")]
     public IActionResult CheckStatus()
     {
-        return Ok(new { thermometer.Name, Temperature = thermometer.Temperature });
+        return Ok(new { thermometer.Name, ActualTemperature = thermometer.ActualTemperature, RequiredTemperature = thermometer.RequiredTemperature });
     }
 
     [HttpPost("execute/{deviceActionId}")]
@@ -23,8 +23,8 @@ public class DomoticASWHttpProtocol(IThermometerService thermometerService) : Co
             case "set-temperature":
                 if (input?.Input is JsonElement tempElement && tempElement.TryGetDouble(out double tempValue))
                 {
-                    thermometer.SetTemperature(tempValue);
-                    return Ok(new { Temperature = thermometer.Temperature });
+                    thermometer.SetRequiredTemperature(tempValue);
+                    return Ok(new { Temperature = thermometer.RequiredTemperature });
                 }
                 return BadRequest("Invalid input for temperature");
             default:
@@ -42,15 +42,25 @@ public class DomoticASWHttpProtocol(IThermometerService thermometerService) : Co
             properties = new object[]
             {
                 new {
-                    id = "temperature",
-                    name = "Temperature",
-                    value = thermometer.Temperature,
+                    id = "actualTemperature",
+                    name = "ActualTemperature",
+                    value = thermometer.ActualTemperature,
                     typeConstraints = new {
                         constraint = "DoubleRange",
                         min = 16.0,
                         max = 30.0
                     }
                 },
+                new {
+                    id = "requiredTemperature",
+                    name = "RequiredTemperature",
+                    value = thermometer.RequiredTemperature,
+                    typeConstraints = new {
+                        constraint = "DoubleRange",
+                        min = 16.0,
+                        max = 30.0
+                    }
+                }
             },
             actions = new object[]
             {

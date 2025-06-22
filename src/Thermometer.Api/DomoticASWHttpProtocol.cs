@@ -5,14 +5,23 @@ using Thermometer.Services;
 
 [ApiController]
 [Route("/")]
-public class DomoticASWHttpProtocol(IThermometerService thermometerService) : ControllerBase
-{
-    private readonly BasicThermometer thermometer = thermometerService.Thermometer;
+public class DomoticASWHttpProtocol : ControllerBase
+{ 
+    private readonly IThermometerService _thermometerService;
+    private readonly ThermometerAgent _thermometerAgent;
+    private readonly BasicThermometer _thermometer;
+
+    public DomoticASWHttpProtocol(IThermometerService thermometerService)
+    {
+        _thermometerService = thermometerService;
+        _thermometerAgent = _thermometerService.Thermometer;
+        _thermometer = _thermometerAgent.thermometer;
+    }
 
     [HttpGet("check-status")]
     public IActionResult CheckStatus()
     {
-        return Ok(new { thermometer.Name, ActualTemperature = thermometer.ActualTemperature, RequiredTemperature = thermometer.RequiredTemperature });
+        return Ok(new { _thermometer.Name, ActualTemperature = _thermometer.ActualTemperature, RequiredTemperature = _thermometer.RequiredTemperature });
     }
 
     [HttpPost("execute/{deviceActionId}")]
@@ -23,8 +32,8 @@ public class DomoticASWHttpProtocol(IThermometerService thermometerService) : Co
             case "set-temperature":
                 if (input?.Input is JsonElement tempElement && tempElement.TryGetDouble(out double tempValue))
                 {
-                    thermometer.SetRequiredTemperature(tempValue);
-                    return Ok(new { Temperature = thermometer.RequiredTemperature });
+                    _thermometer.SetRequiredTemperature(tempValue);
+                    return Ok(new { Temperature = _thermometer.RequiredTemperature });
                 }
                 return BadRequest("Invalid input for temperature");
             default:
@@ -35,16 +44,21 @@ public class DomoticASWHttpProtocol(IThermometerService thermometerService) : Co
     [HttpPost("register")]
     public IActionResult Register()
     {
+        _thermometerAgent.SetServerAddress(
+            Request.Host.Host ?? "localhost",
+            Request.Host.Port ?? 80
+        );
+        _thermometerAgent.Start(TimeSpan.FromSeconds(30));
         var device = new
         {
             id = "328122790945",
-            name = thermometer.Name,
+            name = _thermometer.Name,
             properties = new object[]
             {
                 new {
                     id = "actualTemperature",
                     name = "ActualTemperature",
-                    value = thermometer.ActualTemperature,
+                    value = _thermometer.ActualTemperature,
                     typeConstraints = new {
                         constraint = "DoubleRange",
                         min = 16.0,
@@ -54,7 +68,7 @@ public class DomoticASWHttpProtocol(IThermometerService thermometerService) : Co
                 new {
                     id = "requiredTemperature",
                     name = "RequiredTemperature",
-                    value = thermometer.RequiredTemperature,
+                    value = _thermometer.RequiredTemperature,
                     typeConstraints = new {
                         constraint = "DoubleRange",
                         min = 16.0,

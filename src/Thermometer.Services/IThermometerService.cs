@@ -4,5 +4,5 @@ namespace Thermometer.Services;
 
 public interface IThermometerService
 {
-    BasicThermometer Thermometer { get; }
+    ThermometerAgent Thermometer { get; }
 }

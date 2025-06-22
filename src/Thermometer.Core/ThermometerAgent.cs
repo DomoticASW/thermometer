@@ -10,7 +10,9 @@ namespace Thermometer.Core
     {
         private readonly HttpClient _httpClient = new();
         private readonly ServerCommunicationProtocolHttpAdapter _server;
-        private ServerAddress _serverAddress;
+        private ServerAddress _serverAddress = Environment.GetEnvironmentVariable("SERVER_ADDRESS") != null
+            ? new ServerAddress(Environment.GetEnvironmentVariable("SERVER_ADDRESS")!, 8080)
+            : new ServerAddress("localhost", 8080);
         private Timer? _timer;
         private double _lastActualTemperature;
         public BasicThermometer thermometer = new();

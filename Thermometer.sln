@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thermometer.Core", "src\The
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thermometer.Services", "src\Thermometer.Services\Thermometer.Services.csproj", "{B418B4B5-18B9-439D-911F-BBAEA0EB433D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thermometer.Ports", "src\Thermometer.Ports\Thermometer.Ports.csproj", "{CAE08318-E6D9-4A6E-B809-852CE142F67A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,18 @@ Global
 		{B418B4B5-18B9-439D-911F-BBAEA0EB433D}.Release|x64.Build.0 = Release|Any CPU
 		{B418B4B5-18B9-439D-911F-BBAEA0EB433D}.Release|x86.ActiveCfg = Release|Any CPU
 		{B418B4B5-18B9-439D-911F-BBAEA0EB433D}.Release|x86.Build.0 = Release|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Debug|x64.Build.0 = Debug|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Debug|x86.Build.0 = Debug|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Release|x64.ActiveCfg = Release|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Release|x64.Build.0 = Release|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Release|x86.ActiveCfg = Release|Any CPU
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +79,6 @@ Global
 		{AF1C1B9B-BA62-4A5B-B029-10E3843887F0} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{32C6B76A-9C7A-42D0-B24C-AD5B551919F2} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{B418B4B5-18B9-439D-911F-BBAEA0EB433D} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{CAE08318-E6D9-4A6E-B809-852CE142F67A} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

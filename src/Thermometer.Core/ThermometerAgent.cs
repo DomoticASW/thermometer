@@ -6,17 +6,24 @@ using Thermometer.Ports;
 
 namespace Thermometer.Core
 {
-    public class ThermometerAgent(ServerCommunicationProtocolHttpAdapter server, BasicThermometer thermometer)
+    public class ThermometerAgent
     {
         private readonly HttpClient _httpClient = new();
-        private readonly ServerCommunicationProtocolHttpAdapter _server = server;
+        private readonly ServerCommunicationProtocolHttpAdapter _server;
         private ServerAddress _serverAddress = new(
-            Environment.GetEnvironmentVariable("SERVER_ADDRESS") ?? null,
-            int.Parse(Environment.GetEnvironmentVariable("SERVER_PORT") ?? null)
+            Environment.GetEnvironmentVariable("SERVER_ADDRESS") ?? "",
+            int.Parse(Environment.GetEnvironmentVariable("SERVER_PORT") ?? "")
         );
         private Timer? _timer;
-        private double _lastActualTemperature = thermometer.ActualTemperature;
-        public BasicThermometer thermometer = new();
+        public BasicThermometer thermometer;
+        private double _lastActualTemperature;
+
+        public ThermometerAgent(ServerCommunicationProtocolHttpAdapter server)
+        {
+            _server = server;
+            thermometer = new BasicThermometer();
+            _lastActualTemperature = thermometer.ActualTemperature;
+        }
 
         public void Start(TimeSpan interval)
         {

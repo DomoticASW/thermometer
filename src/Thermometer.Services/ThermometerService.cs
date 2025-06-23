@@ -4,5 +4,5 @@ namespace Thermometer.Services;
 
 public class ThermometerService : IThermometerService
 {
-    public ThermometerAgent Thermometer { get; } = new ThermometerAgent(new Ports.ServerCommunicationProtocolHttpAdapter(), new BasicThermometer());
+    public ThermometerAgent Thermometer { get; } = new ThermometerAgent(new Ports.ServerCommunicationProtocolHttpAdapter());
 }

@@ -49,7 +49,7 @@ public class DomoticASWHttpProtocol : ControllerBase
         {
             _thermometerAgent.SetServerAddress(
                 Request.Host.Host,
-                Request.Host.Port.Value
+                Request.Host.Port ?? 8080
             );
         }
         _thermometerAgent.Start(TimeSpan.FromSeconds(30));

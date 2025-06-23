@@ -44,8 +44,8 @@ public class DomoticASWHttpProtocol : ControllerBase
     [HttpPost("register")]
     public IActionResult Register()
     {
-        if (Environment.GetEnvironmentVariable("SERVER_ADDRESS") is null &&
-            Environment.GetEnvironmentVariable("SERVER_PORT") is null)
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SERVER_ADDRESS")) &&
+            string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SERVER_PORT")))
         {
             _thermometerAgent.SetServerAddress(
                 Request.Host.Host,

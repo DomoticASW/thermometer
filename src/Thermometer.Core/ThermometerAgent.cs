@@ -6,22 +6,17 @@ using Thermometer.Ports;
 
 namespace Thermometer.Core
 {
-    public class ThermometerAgent
+    public class ThermometerAgent(ServerCommunicationProtocolHttpAdapter server, BasicThermometer thermometer)
     {
         private readonly HttpClient _httpClient = new();
-        private readonly ServerCommunicationProtocolHttpAdapter _server;
-        private ServerAddress _serverAddress = Environment.GetEnvironmentVariable("SERVER_ADDRESS") != null
-            ? new ServerAddress(Environment.GetEnvironmentVariable("SERVER_ADDRESS")!, 8080)
-            : new ServerAddress("localhost", 8080);
+        private readonly ServerCommunicationProtocolHttpAdapter _server = server;
+        private ServerAddress _serverAddress = new(
+            Environment.GetEnvironmentVariable("SERVER_ADDRESS") ?? null,
+            int.Parse(Environment.GetEnvironmentVariable("SERVER_PORT") ?? null)
+        );
         private Timer? _timer;
-        private double _lastActualTemperature;
+        private double _lastActualTemperature = thermometer.ActualTemperature;
         public BasicThermometer thermometer = new();
-
-        public ThermometerAgent(ServerCommunicationProtocolHttpAdapter server, BasicThermometer thermometer)
-        {
-            _server = server;
-            _lastActualTemperature = thermometer.ActualTemperature;
-        }
 
         public void Start(TimeSpan interval)
         {
@@ -40,12 +35,12 @@ namespace Thermometer.Core
 
             if (Math.Abs(thermometer.ActualTemperature - _lastActualTemperature) > 0.01)
             {
-                await _server.SendEvent(_serverAddress, "temperature-changed", thermometer.id);
+                await _server.SendEvent(_serverAddress, "temperature-changed", thermometer.Id);
                 _lastActualTemperature = thermometer.ActualTemperature;
             }
 
-            await _server.UpdateState(_serverAddress, "actualTemperature", thermometer.ActualTemperature, thermometer.id);
-            await _server.UpdateState(_serverAddress, "requiredTemperature", thermometer.RequiredTemperature, thermometer.id);
+            await _server.UpdateState(_serverAddress, "actualTemperature", thermometer.ActualTemperature, thermometer.Id);
+            await _server.UpdateState(_serverAddress, "requiredTemperature", thermometer.RequiredTemperature, thermometer.Id);
         }
 
         public void SetServerAddress(string host, int port)

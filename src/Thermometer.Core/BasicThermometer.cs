@@ -7,7 +7,7 @@ namespace Thermometer.Core
     public class BasicThermometer
     {
         public string Name { get; } = Environment.GetEnvironmentVariable("NAME") ?? "Thermometer-01";
-        public string id { get; } = "328122790945";
+        public string Id { get; } = "328122790945";
         public double ActualTemperature { get; private set; } = 20.0;
         public double RequiredTemperature { get; private set; } = 20.0;
 

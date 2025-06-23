@@ -44,10 +44,14 @@ public class DomoticASWHttpProtocol : ControllerBase
     [HttpPost("register")]
     public IActionResult Register()
     {
-        _thermometerAgent.SetServerAddress(
-            Request.Host.Host ?? "localhost",
-            Request.Host.Port ?? 80
-        );
+        if (Environment.GetEnvironmentVariable("SERVER_ADDRESS") is null &&
+            Environment.GetEnvironmentVariable("SERVER_PORT") is null)
+        {
+            _thermometerAgent.SetServerAddress(
+                Request.Host.Host,
+                Request.Host.Port.Value
+            );
+        }
         _thermometerAgent.Start(TimeSpan.FromSeconds(30));
         var device = new
         {

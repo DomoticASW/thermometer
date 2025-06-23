@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
- <ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Thermometer.Ports\Thermometer.Ports.csproj" />
   </ItemGroup>
 

@@ -55,7 +55,7 @@ public class DomoticASWHttpProtocol : ControllerBase
         _thermometerAgent.Start(TimeSpan.FromSeconds(30));
         var device = new
         {
-            id = "328122790945",
+            id = _thermometer.Id,
             name = _thermometer.Name,
             properties = new object[]
             {

@@ -57,7 +57,6 @@ namespace Thermometer.Core
         public void SetServerAddress(string host, int port)
         {
             _serverAddress = new ServerAddress(host, port);
-            Console.WriteLine(_serverAddress);
         }
     }
 }

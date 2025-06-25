@@ -8,7 +8,6 @@ namespace Thermometer.Core
 {
     public class ThermometerAgent
     {
-        private readonly HttpClient _httpClient = new();
         private readonly ServerCommunicationProtocolHttpAdapter _server;
         private ServerAddress? _serverAddress;     
         private Timer? _timer;

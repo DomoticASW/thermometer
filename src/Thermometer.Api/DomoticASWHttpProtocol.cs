@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Thermometer.Core;
 using Thermometer.Services;
+using Thermometer.Ports;
 
 [ApiController]
 [Route("/")]
 public class DomoticASWHttpProtocol : ControllerBase
-{ 
+{
     private readonly IThermometerService _thermometerService;
     private readonly ThermometerAgent _thermometerAgent;
     private readonly BasicThermometer _thermometer;
@@ -42,17 +43,13 @@ public class DomoticASWHttpProtocol : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register()
+    public IActionResult Register([FromBody] ServerAddress input)
     {
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SERVER_ADDRESS")) &&
-            string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SERVER_PORT")))
+        if (input?.Host is string host && input?.Port is int port && !string.IsNullOrEmpty(host) && port > 0)
         {
-            _thermometerAgent.SetServerAddress(
-                Request.Host.Host,
-                Request.Host.Port ?? 8080
-            );
+            _thermometerAgent.SetServerAddress(host, port);
+            _thermometerAgent.Start(TimeSpan.FromSeconds(30));
         }
-        _thermometerAgent.Start(TimeSpan.FromSeconds(30));
         var device = new
         {
             id = _thermometer.Id,
@@ -104,5 +101,4 @@ public class DomoticASWHttpProtocol : ControllerBase
     {
         public JsonElement Input { get; set; }
     }
-
 }

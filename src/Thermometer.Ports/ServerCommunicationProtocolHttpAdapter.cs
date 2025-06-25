@@ -16,7 +16,7 @@ namespace Thermometer.Ports
 
         public async Task SendEvent(ServerAddress serverAddress, string eventName, string deviceId)
         {
-            var url = $"http://{serverAddress.Host}:{serverAddress.Port}/api/devices/{deviceId}/events";
+            var url = $"http://{serverAddress.Host}:{serverAddress.ServerPort}/api/devices/{deviceId}/events";
             var payload = JsonSerializer.Serialize(new { @event = eventName });
             var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
@@ -35,7 +35,7 @@ namespace Thermometer.Ports
 
         public async Task UpdateState(ServerAddress serverAddress, string propertyName, object propertyValue, string deviceId)
         {
-            var url = $"http://{serverAddress.Host}:{serverAddress.Port}/api/devices/{deviceId}/properties/{propertyName}";
+            var url = $"http://{serverAddress.Host}:{serverAddress.ServerPort}/api/devices/{deviceId}/properties/{propertyName}";
             var payload = JsonSerializer.Serialize(new { value = propertyValue });
             var content = new StringContent(payload, Encoding.UTF8, "application/json");
 

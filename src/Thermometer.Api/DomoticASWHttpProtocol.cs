@@ -45,7 +45,7 @@ public class DomoticASWHttpProtocol : ControllerBase
     [HttpPost("register")]
     public IActionResult Register([FromBody] ServerAddress input)
     {
-        if (input?.Host is string host && input?.Port is int port && !string.IsNullOrEmpty(host) && port > 0)
+        if (input?.Host is string host && input?.ServerPort is int port && !string.IsNullOrEmpty(host) && port > 0)
         {
             _thermometerAgent.SetServerAddress(host, port);
             _thermometerAgent.Start(TimeSpan.FromSeconds(30));

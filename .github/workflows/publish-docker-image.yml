@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: docker.
-  IMAGE_NAME: fracarluccii/thermometer
+  IMAGE_NAME: fracarluccii/domoticasw-thermometer
 
 jobs:
   build-and-push:
@@ -28,4 +28,4 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/thermometer:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/domoticasw-thermometer:latest

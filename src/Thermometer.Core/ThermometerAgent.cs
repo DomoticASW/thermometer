@@ -29,6 +29,7 @@ namespace Thermometer.Core
             if (serverAddress is not null && serverPort is not null)
             {
                 _serverAddress = new ServerAddress(serverAddress, int.Parse(serverPort));
+                Registered = true;
             }
 
             string? discoveryAddress = Environment.GetEnvironmentVariable("DISCOVERY_ADDRESS");

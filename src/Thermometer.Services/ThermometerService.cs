@@ -30,7 +30,6 @@ public class ThermometerService : IThermometerService, IHostedService
                     {
                         await Thermometer.AnnouncePresenceAsync();
                         await Task.Delay(5000, _cts.Token);
-                        Console.WriteLine("Thermometer presence announcement sent");
                     }
                     catch (OperationCanceledException)
                     {

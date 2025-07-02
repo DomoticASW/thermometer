@@ -3,7 +3,7 @@ using Thermometer.Ports;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://0.0.0.0:" + (Environment.GetEnvironmentVariable("DEVICE_PORT") ?? "8080"));
+builder.WebHost.UseUrls("http://0.0.0.0:" + (Environment.GetEnvironmentVariable("DEVICE_PORT") ?? "8090"));
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<ServerCommunicationProtocolHttpAdapter>();

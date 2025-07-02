@@ -22,7 +22,6 @@ namespace Thermometer.Core
 
         public ThermometerAgent(ServerCommunicationProtocolHttpAdapter server)
         {
-            _discoveryBroadcastAddress = new ServerAddress("255.255.255.255", 30000);
             _devicePort = int.Parse(Environment.GetEnvironmentVariable("DEVICE_PORT") ?? "8080");
             string? serverAddress = Environment.GetEnvironmentVariable("SERVER_ADDRESS");
             string? serverPort = Environment.GetEnvironmentVariable("SERVER_PORT");
@@ -31,6 +30,19 @@ namespace Thermometer.Core
             {
                 _serverAddress = new ServerAddress(serverAddress, int.Parse(serverPort));
             }
+
+            string? discoveryAddress = Environment.GetEnvironmentVariable("DISCOVERY_ADDRESS");
+            string? discoveryPort = Environment.GetEnvironmentVariable("DISCOVERY_PORT");
+
+            if (discoveryAddress is not null && discoveryPort is not null)
+            {
+                _discoveryBroadcastAddress = new ServerAddress(discoveryAddress, int.Parse(discoveryPort));
+            }
+            else
+            {
+            _discoveryBroadcastAddress = new ServerAddress("255.255.255.255", 30000);
+            }            
+
             _server = server;
             Thermometer = new BasicThermometer();
             _lastActualTemperature = Thermometer.ActualTemperature;

@@ -1,7 +1,10 @@
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using Thermometer.Ports;
 
 namespace Thermometer.Core
@@ -9,13 +12,18 @@ namespace Thermometer.Core
     public class ThermometerAgent
     {
         private readonly ServerCommunicationProtocolHttpAdapter _server;
-        private ServerAddress? _serverAddress;     
+        private ServerAddress? _serverAddress;
+        private readonly ServerAddress _discoveryBroadcastAddress;
         private Timer? _timer;
-        public BasicThermometer thermometer;
+        public BasicThermometer Thermometer { get; private set; }
         private double _lastActualTemperature;
+        private readonly int _devicePort;
+        public bool Registered { get; set; } = false;
 
         public ThermometerAgent(ServerCommunicationProtocolHttpAdapter server)
         {
+            _discoveryBroadcastAddress = new ServerAddress("255.255.255.255", 30000);
+            _devicePort = int.Parse(Environment.GetEnvironmentVariable("DEVICE_PORT") ?? "8080");
             string? serverAddress = Environment.GetEnvironmentVariable("SERVER_ADDRESS");
             string? serverPort = Environment.GetEnvironmentVariable("SERVER_PORT");
 
@@ -24,8 +32,23 @@ namespace Thermometer.Core
                 _serverAddress = new ServerAddress(serverAddress, int.Parse(serverPort));
             }
             _server = server;
-            thermometer = new BasicThermometer();
-            _lastActualTemperature = thermometer.ActualTemperature;
+            Thermometer = new BasicThermometer();
+            _lastActualTemperature = Thermometer.ActualTemperature;
+            _ = AnnouncePresenceAsync();
+        }
+
+        public async Task<bool> AnnouncePresenceAsync()
+        {
+            try
+            {
+                await _server.Announce(_discoveryBroadcastAddress, _devicePort, Thermometer.Id, Thermometer.Name);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send announcement: {ex.Message}");
+                return false;
+            }
         }
 
         public void Start(TimeSpan interval)
@@ -41,16 +64,16 @@ namespace Thermometer.Core
 
         private async void UpdateAndSend(object? state)
         {
-            thermometer.SimulateTemperatureStep();
+            Thermometer.SimulateTemperatureStep();
 
-            if (Math.Abs(thermometer.ActualTemperature - _lastActualTemperature) > 0.01)
+            if (Math.Abs(Thermometer.ActualTemperature - _lastActualTemperature) > 0.01)
             {
-                await _server.SendEvent(_serverAddress!, "temperature-changed", thermometer.Id);
-                _lastActualTemperature = thermometer.ActualTemperature;
+                await _server.SendEvent(_serverAddress!, "temperature-changed", Thermometer.Id);
+                _lastActualTemperature = Thermometer.ActualTemperature;
             }
 
-            await _server.UpdateState(_serverAddress!, "actualTemperature", thermometer.ActualTemperature, thermometer.Id);
-            await _server.UpdateState(_serverAddress!, "requiredTemperature", thermometer.RequiredTemperature, thermometer.Id);
+            await _server.UpdateState(_serverAddress!, "actualTemperature", Thermometer.ActualTemperature, Thermometer.Id);
+            await _server.UpdateState(_serverAddress!, "requiredTemperature", Thermometer.RequiredTemperature, Thermometer.Id);
         }
 
         public void SetServerAddress(string host, int port)

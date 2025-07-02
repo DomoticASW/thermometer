@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Thermometer.Core;
 using Thermometer.Services;
-using Thermometer.Ports;
 
 [ApiController]
 [Route("/")]
@@ -16,7 +15,7 @@ public class DomoticASWHttpProtocol : ControllerBase
     {
         _thermometerService = thermometerService;
         _thermometerAgent = _thermometerService.Thermometer;
-        _thermometer = _thermometerAgent.thermometer;
+        _thermometer = _thermometerAgent.Thermometer;
     }
 
     [HttpGet("check-status")]
@@ -28,6 +27,7 @@ public class DomoticASWHttpProtocol : ControllerBase
     [HttpPost("execute/{deviceActionId}")]
     public IActionResult ExecuteAction(string deviceActionId, [FromBody] ExecuteInput input)
     {
+        Console.WriteLine($"Executing action: {deviceActionId} with input: {input?.Input}");
         switch (deviceActionId.ToLower())
         {
             case "set-temperature":
@@ -43,12 +43,17 @@ public class DomoticASWHttpProtocol : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromBody] ServerAddress input)
+    public IActionResult Register([FromBody] JsonElement Input)
     {
-        if (input?.Host is string host && input?.ServerPort is int port && !string.IsNullOrEmpty(host) && port > 0)
+        int port = Input.GetProperty("serverPort").GetInt32();
+        if (port <= 0 || port > 65535)
         {
-            _thermometerAgent.SetServerAddress(host, port);
-            _thermometerAgent.Start(TimeSpan.FromSeconds(30));
+            return BadRequest("Invalid port number");
+        }
+        {
+            _thermometerAgent.SetServerAddress(Request.HttpContext.Connection.RemoteIpAddress!.ToString(), port);
+            Console.WriteLine($"Thermometer registered at {Request.HttpContext.Connection.RemoteIpAddress}:{port}");
+            _thermometerAgent.Registered = true;
         }
         var device = new
         {

@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -49,6 +50,36 @@ namespace Thermometer.Ports
             catch (Exception ex)
             {
                 Console.WriteLine($"CLIENT ERROR: {ex.Message}");
+            }
+        }
+
+        public async Task Announce(ServerAddress discoveryBroadcastAddress, int devicePort, string thermometerId, string thermometerName)
+        {
+            var message = new 
+            {
+                id = thermometerId,
+                name = thermometerName,
+                port = devicePort
+            };
+            string broadcastIp = discoveryBroadcastAddress.Host;
+            int broadcastPort = discoveryBroadcastAddress.ServerPort;
+
+            using var udpClient = new UdpClient();
+            try
+            {
+                udpClient.EnableBroadcast = true;
+
+                udpClient.Client.ReceiveTimeout = 1000;
+                udpClient.Client.SendTimeout = 1000;
+
+                string jsonMessage = JsonSerializer.Serialize(message);
+                byte[] data = Encoding.UTF8.GetBytes(jsonMessage);
+
+                await udpClient.SendAsync(data, data.Length, broadcastIp, broadcastPort);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during broadcast: {ex.Message}");
             }
         }
     }

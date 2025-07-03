@@ -75,11 +75,7 @@ public class DomoticASWHttpProtocol : ControllerBase
                     id = "requiredTemperature",
                     name = "RequiredTemperature",
                     value = _thermometer.RequiredTemperature,
-                    typeConstraints = new {
-                        constraint = "DoubleRange",
-                        min = 16.0,
-                        max = 30.0
-                    }
+                    setterActionId = "set-temperature",
                 }
             },
             actions = new object[]

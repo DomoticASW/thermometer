@@ -4,31 +4,50 @@ A Thermometer simulated device to test DomoticASW
 
 ## Docker Hub
 
-[Docker Hub - fracarluccii/thermometer](https://hub.docker.com/repository/docker/fracarluccii/thermometer/general)
+[Docker Hub - fracarluccii/domoticasw-thermometer](https://hub.docker.com/repository/docker/fracarluccii/domoticasw-thermometer/general)
 
 ## Run with Docker
 
 To run the thermometer device using Docker, you can use the following commands:
 
 ```bash
-docker pull fracarluccii/thermometer:latest
-docker run -d -p 8080:80 -e NAME=Thermometer-01 fracarluccii/thermometer
+docker run fracarluccii/domoticasw-thermometer
 ```
 
-IF you want you can pass the name of the thermometer as an environment variable `NAME`
+### Variables
 
-## Endpoints
+The following configurations can be passed to the container as environment variables
 
-| Metodo | URL                       | Descrizione                            |
-| ------ | ------------------------- | -------------------------------------- |
-| GET    | `/check-status`           | Current status of the thermometer      |
-| POST   | `/register`               | Register the thermometer in the server |
-| POST   | `/execute/set-temperature`| Set the temperature of the thermometer |
+| Variable name     | Default value   | Explanation                         |
+| ----------------- | --------------- | ----------------------------------- |
+| NAME              | Thermometer-01  | thermometer name                    |
+| DEVICE_PORT       | 8090            | Port used by the thermometer device |
+| SERVER_ADDRESS    | localhost       | Address of the server               |
+| SERVER_PORT       | 3000            | Port of the server                  |
+| DISCOVERY_ADDRESS | 255.255.255.255 | Address for discovery broadcasts    |
+| DISCOVERY_PORT    | 30000           | Port for discovery broadcasts       |
 
-Body example for setting temperature:
+## How to use
+
+At first send <code><\<device-address\>>/register</code> request to the device to register it in the server.
+
+## Properties
+
+- <b>actualTemperature</b>: The current temperature reading of the thermometer.
+- <b>requiredTemperature</b>: The desired temperature to be set on the thermometer.
+
+## Actions
+
+- <code><\<device-address\>>/execute/set-temperature</code>: Set the desired temperature on the thermometer.
+
+Body example for set-temperature:
 
 ```json
 {
   "input": 25.5
 }
 ```
+
+## Events
+
+- <b>temperatureChanged</b>: Triggered when the actual temperature changes.

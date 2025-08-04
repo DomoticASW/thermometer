@@ -34,17 +34,17 @@ namespace Thermometer.Ports
             }
         }
 
-        public async Task UpdateState(ServerAddress serverAddress, string propertyName, object propertyValue, string deviceId)
+        public async Task UpdateState(ServerAddress serverAddress, string propertyId, object propertyValue, string deviceId)
         {
-            var url = $"http://{serverAddress.Host}:{serverAddress.ServerPort}/api/devices/{deviceId}/properties/{propertyName}";
+            var url = $"http://{serverAddress.Host}:{serverAddress.ServerPort}/api/devices/{deviceId}/properties/{propertyId}";
             var payload = JsonSerializer.Serialize(new { value = propertyValue });
             var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
-            Console.WriteLine($"CLIENT: Updating state {propertyName}={propertyValue} to {url}");
+            Console.WriteLine($"CLIENT: Updating state {propertyId}={propertyValue} to {url}");
 
             try
             {
-                var response = await _httpClient.PostAsync(url, content);
+                var response = await _httpClient.PatchAsync(url, content);
                 Console.WriteLine($"CLIENT: Update response: {response.StatusCode}");
             }
             catch (Exception ex)

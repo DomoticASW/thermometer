@@ -63,7 +63,7 @@ public class DomoticASWHttpProtocol : ControllerBase
             {
                 new {
                     id = "actualTemperature",
-                    name = "ActualTemperature",
+                    name = "Actual temperature",
                     value = _thermometer.ActualTemperature,
                     typeConstraints = new {
                         constraint = "DoubleRange",
@@ -73,7 +73,7 @@ public class DomoticASWHttpProtocol : ControllerBase
                 },
                 new {
                     id = "requiredTemperature",
-                    name = "RequiredTemperature",
+                    name = "Required temperature",
                     value = _thermometer.RequiredTemperature,
                     setterActionId = "set-temperature",
                 }
@@ -82,7 +82,7 @@ public class DomoticASWHttpProtocol : ControllerBase
             {
                 new {
                     id = "set-temperature",
-                    name = "Set Temperature",
+                    name = "Set temperature",
                     description = "Sets the thermometer temperature",
                     inputTypeConstraints = new {
                         type = "Double",

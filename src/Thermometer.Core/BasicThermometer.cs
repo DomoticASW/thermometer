@@ -6,8 +6,8 @@ namespace Thermometer.Core
 {
     public class BasicThermometer
     {
-        public string Name { get; } = Environment.GetEnvironmentVariable("NAME") ?? "Thermometer-01";
-        public string Id { get; } = "328122790945";
+        public string Name { get; } = Environment.GetEnvironmentVariable("NAME") ?? "Thermometer";
+        public string Id { get; } = "thermometer-01";
         public double ActualTemperature { get; private set; } = 20.0;
         public double RequiredTemperature { get; private set; } = 20.0;
 
@@ -16,7 +16,7 @@ namespace Thermometer.Core
             if (Math.Abs(ActualTemperature - RequiredTemperature) < 0.1)
                 return;
 
-            ActualTemperature += ActualTemperature < RequiredTemperature ? 0.5 : 0.5;
+            ActualTemperature += ActualTemperature < RequiredTemperature ? 0.5 : -0.5;
         }
 
         public void SetRequiredTemperature(double temperature)

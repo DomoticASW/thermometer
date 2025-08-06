@@ -15,9 +15,12 @@ namespace Thermometer.Core
         private ServerAddress? _serverAddress;
         private readonly ServerAddress _discoveryBroadcastAddress;
         private Timer? _timer;
+        private Thread? _workerThread;
         public BasicThermometer Thermometer { get; private set; }
         private double _lastActualTemperature;
+        private double _lastRequiredTemperature;
         private readonly int _devicePort;
+        private volatile bool _isRunning;
         public bool Registered { get; set; } = false;
 
         public ThermometerAgent(ServerCommunicationProtocolHttpAdapter server)
@@ -47,6 +50,7 @@ namespace Thermometer.Core
             _server = server;
             Thermometer = new BasicThermometer();
             _lastActualTemperature = Thermometer.ActualTemperature;
+            _lastRequiredTemperature = Thermometer.RequiredTemperature;
             _ = AnnouncePresenceAsync();
         }
 
@@ -66,27 +70,42 @@ namespace Thermometer.Core
 
         public void Start(TimeSpan interval)
         {
-            _timer = new Timer(UpdateAndSend, null, TimeSpan.Zero, interval);
-            Console.WriteLine($"Thermometer agent started. Sending updates every {interval.TotalSeconds} seconds.");
+            _timer = new Timer(_ => Thermometer.SimulateTemperatureStep(), null, TimeSpan.Zero, interval);
+            _isRunning = true;
+            _workerThread = new Thread(UpdateAndSend)
+            {
+                IsBackground = true,
+                Name = "ThermometerAgentWorker"
+            };
+            
+            _workerThread.Start();
+            Console.WriteLine($"Thermometer agent started");
         }
 
         public void Stop()
         {
             _timer?.Dispose();
+            _isRunning = false;
+            _workerThread?.Join();
         }
 
         private async void UpdateAndSend(object? state)
         {
-            Thermometer.SimulateTemperatureStep();
-
-            if (Math.Abs(Thermometer.ActualTemperature - _lastActualTemperature) > 0.01)
+            while (_isRunning)
             {
-                await _server.SendEvent(_serverAddress!, "temperature-changed", Thermometer.Id);
-                _lastActualTemperature = Thermometer.ActualTemperature;
-            }
+                if (Math.Abs(Thermometer.ActualTemperature - _lastActualTemperature) > 0.01)
+                {
+                    await _server.SendEvent(_serverAddress!, "temperature-changed", Thermometer.Id);
+                    _lastActualTemperature = Thermometer.ActualTemperature;
+                    await _server.UpdateState(_serverAddress!, "actualTemperature", Thermometer.ActualTemperature, Thermometer.Id);
+                }
 
-            await _server.UpdateState(_serverAddress!, "actualTemperature", Thermometer.ActualTemperature, Thermometer.Id);
-            await _server.UpdateState(_serverAddress!, "requiredTemperature", Thermometer.RequiredTemperature, Thermometer.Id);
+                if (Math.Abs(Thermometer.RequiredTemperature - _lastRequiredTemperature) > 0.01)
+                {
+                    _lastRequiredTemperature = Thermometer.RequiredTemperature;
+                    await _server.UpdateState(_serverAddress!, "requiredTemperature", Thermometer.RequiredTemperature, Thermometer.Id);
+                }
+            }
         }
 
         public void SetServerAddress(string host, int port)

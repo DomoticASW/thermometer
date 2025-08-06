@@ -21,7 +21,7 @@ namespace Thermometer.Ports
             var payload = JsonSerializer.Serialize(new { @event = eventName });
             var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
-            Console.WriteLine($"CLIENT: Sending event to {url}");
+            Console.WriteLine($"CLIENT: Sending event {eventName}");
 
             try
             {
@@ -40,7 +40,7 @@ namespace Thermometer.Ports
             var payload = JsonSerializer.Serialize(new { value = propertyValue });
             var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
-            Console.WriteLine($"CLIENT: Updating state {propertyId}={propertyValue} to {url}");
+            Console.WriteLine($"CLIENT: Updating state {propertyId}={propertyValue}");
 
             try
             {

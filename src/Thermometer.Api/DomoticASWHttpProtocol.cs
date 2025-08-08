@@ -36,9 +36,9 @@ public class DomoticASWHttpProtocol : ControllerBase
                     _thermometer.SetRequiredTemperature(tempValue);
                     return Ok(new { Temperature = _thermometer.RequiredTemperature });
                 }
-                return BadRequest("Invalid input for temperature");
+                return BadRequest(new { cause = "Invalid input for temperature" });
             default:
-                return NotFound("Unknown action");
+                return NotFound(new { cause = "Unknown action" });
         }
     }
 
@@ -48,7 +48,7 @@ public class DomoticASWHttpProtocol : ControllerBase
         int port = Input.GetProperty("serverPort").GetInt32();
         if (port <= 0 || port > 65535)
         {
-            return BadRequest("Invalid port number");
+            return BadRequest(new { cause = "Invalid port number" });
         }
         {
             _thermometerAgent.SetServerAddress(Request.HttpContext.Connection.RemoteIpAddress!.ToString(), port);

@@ -105,6 +105,7 @@ namespace Thermometer.Core
                     _lastRequiredTemperature = Thermometer.RequiredTemperature;
                     await _server.UpdateState(_serverAddress!, "requiredTemperature", Thermometer.RequiredTemperature, Thermometer.Id);
                 }
+                await Task.Delay(200);
             }
         }
 

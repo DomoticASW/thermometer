@@ -28,20 +28,21 @@ public class ThermometerService : IThermometerService, IHostedService
                 {
                     while (!_cts.IsCancellationRequested && !Thermometer.Registered)
                     {
-                    try
-                    {
-                        await Thermometer.AnnouncePresenceAsync();
-                        await Task.Delay(5000, _cts.Token);
+                        try
+                        {
+                            await Thermometer.AnnouncePresenceAsync();
+                            await Task.Delay(5000, _cts.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                        }
                     }
-                    catch (OperationCanceledException)
+                    if (Thermometer.Registered)
                     {
+                        Thermometer.Start(TimeSpan.FromSeconds(30));
                     }
-                }
-                if (Thermometer.Registered)
-                {
-                    Thermometer.Start(TimeSpan.FromSeconds(30));
-                }
-            }, _cts.Token);
+                }, _cts.Token);
+            }
         }
         IsRunning = true;
         return Task.CompletedTask;

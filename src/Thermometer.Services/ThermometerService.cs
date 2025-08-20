@@ -21,11 +21,13 @@ public class ThermometerService : IThermometerService, IHostedService
 
         else
         {
-            Console.WriteLine("Thermometer not registered, starting presence announcement loop");
-            _ = Task.Run(async () =>
+            if (!Thermometer.Registered)
             {
-                while (!_cts.IsCancellationRequested && !Thermometer.Registered)
+                Console.WriteLine("Thermometer not registered, starting presence announcement loop");
+                _ = Task.Run(async () =>
                 {
+                    while (!_cts.IsCancellationRequested && !Thermometer.Registered)
+                    {
                     try
                     {
                         await Thermometer.AnnouncePresenceAsync();

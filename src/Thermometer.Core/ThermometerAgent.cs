@@ -25,7 +25,7 @@ namespace Thermometer.Core
 
         public ThermometerAgent(ServerCommunicationProtocolHttpAdapter server)
         {
-            _devicePort = int.Parse(Environment.GetEnvironmentVariable("DEVICE_PORT") ?? "8080");
+            _devicePort = int.Parse(Environment.GetEnvironmentVariable("DEVICE_PORT") ?? "8090");
             string? serverAddress = Environment.GetEnvironmentVariable("SERVER_ADDRESS");
             string? serverPort = Environment.GetEnvironmentVariable("SERVER_PORT");
 

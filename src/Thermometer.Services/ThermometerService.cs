@@ -43,6 +43,10 @@ public class ThermometerService : IThermometerService, IHostedService
                     }
                 }, _cts.Token);
             }
+            else
+            {
+                Thermometer.Start(TimeSpan.FromSeconds(30));
+            }
         }
         IsRunning = true;
         return Task.CompletedTask;

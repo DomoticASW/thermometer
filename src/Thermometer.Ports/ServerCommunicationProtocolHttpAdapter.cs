@@ -53,13 +53,14 @@ namespace Thermometer.Ports
             }
         }
 
-        public async Task Announce(ServerAddress discoveryBroadcastAddress, int devicePort, string thermometerId, string thermometerName)
+        public async Task Announce(ServerAddress discoveryBroadcastAddress, int devicePort, string thermometerId, string thermometerName, string lanHostname)
         {
-            var message = new 
+            var message = new
             {
                 id = thermometerId,
                 name = thermometerName,
-                port = devicePort
+                port = devicePort,
+                lan_hostname = lanHostname
             };
             string broadcastIp = discoveryBroadcastAddress.Host;
             int broadcastPort = discoveryBroadcastAddress.ServerPort;

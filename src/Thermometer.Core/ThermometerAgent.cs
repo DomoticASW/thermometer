@@ -14,6 +14,7 @@ namespace Thermometer.Core
         private readonly ServerCommunicationProtocolHttpAdapter _server;
         private ServerAddress? _serverAddress;
         private readonly ServerAddress _discoveryBroadcastAddress;
+        private readonly string _lanHostname;
         private Timer? _timer;
         private Thread? _workerThread;
         public BasicThermometer Thermometer { get; private set; }
@@ -25,6 +26,12 @@ namespace Thermometer.Core
 
         public ThermometerAgent(ServerCommunicationProtocolHttpAdapter server)
         {
+            _lanHostname = Environment.GetEnvironmentVariable("LAN_HOSTNAME")!;
+            if (_lanHostname is null)
+            {
+                throw new ArgumentException("LAN_HOSTNAME environment variable is not set.");
+            }
+            
             _devicePort = int.Parse(Environment.GetEnvironmentVariable("DEVICE_PORT") ?? "8090");
             string? serverAddress = Environment.GetEnvironmentVariable("SERVER_ADDRESS");
 
@@ -65,7 +72,7 @@ namespace Thermometer.Core
         {
             try
             {
-                await _server.Announce(_discoveryBroadcastAddress, _devicePort, Thermometer.Id, Thermometer.Name);
+                await _server.Announce(_discoveryBroadcastAddress, _devicePort, Thermometer.Id, Thermometer.Name, _lanHostname);
                 return true;
             }
             catch (Exception ex)

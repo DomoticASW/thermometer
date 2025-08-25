@@ -98,6 +98,7 @@ namespace Thermometer.Core
             _timer?.Dispose();
             _isRunning = false;
             _workerThread?.Join();
+            Registered = false;
         }
 
         private async void UpdateAndSend(object? state)

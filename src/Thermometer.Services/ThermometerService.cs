@@ -8,7 +8,7 @@ public class ThermometerService : IThermometerService, IHostedService
 {
     public ThermometerAgent Thermometer { get; }
     public bool IsRunning { get; private set; }
-    private readonly CancellationTokenSource _cts = new();
+    private CancellationTokenSource _cts = new();
 
     public ThermometerService()
     {
@@ -18,7 +18,6 @@ public class ThermometerService : IThermometerService, IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         if (IsRunning) return Task.CompletedTask;
-
         else
         {
             if (!Thermometer.Registered)
@@ -62,20 +61,14 @@ public class ThermometerService : IThermometerService, IHostedService
         return Task.CompletedTask;
     }
 
-    public void Start()
-    {
-        _ = StartAsync(CancellationToken.None);
-    }
-
-    public void Stop()
-    {
-        _ = StopAsync(CancellationToken.None);
-    }
-
     public async Task Restart()
     {
-        Stop();
+        await StopAsync(CancellationToken.None);
+    
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        
         await Task.Delay(1000);
-        Start();
+        await StartAsync(CancellationToken.None);
     }
 }

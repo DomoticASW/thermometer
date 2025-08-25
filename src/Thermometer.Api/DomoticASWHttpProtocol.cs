@@ -54,7 +54,6 @@ public class DomoticASWHttpProtocol : ControllerBase
             _thermometerAgent.SetServerAddress(Request.HttpContext.Connection.RemoteIpAddress!.ToString(), port);
             Console.WriteLine($"Thermometer registered at {Request.HttpContext.Connection.RemoteIpAddress}:{port}");
             _thermometerAgent.Registered = true;
-            _thermometerService.Start();
         }
         var device = new
         {

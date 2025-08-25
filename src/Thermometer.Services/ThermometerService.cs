@@ -61,7 +61,7 @@ public class ThermometerService : IThermometerService, IHostedService
         IsRunning = false;
         return Task.CompletedTask;
     }
-    
+
     public void Start()
     {
         _ = StartAsync(CancellationToken.None);
@@ -70,5 +70,12 @@ public class ThermometerService : IThermometerService, IHostedService
     public void Stop()
     {
         _ = StopAsync(CancellationToken.None);
+    }
+
+    public async Task Restart()
+    {
+        Stop();
+        await Task.Delay(1000);
+        Start();
     }
 }

@@ -101,7 +101,7 @@ public class DomoticASWHttpProtocol : ControllerBase
     [HttpPost("unregister")]
     public IActionResult Unregister()
     {
-        _thermometerService.Stop();
+        _thermometerService.Restart();
         Console.WriteLine($"Thermometer unregistered");
         return Ok();
     }

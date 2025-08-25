@@ -8,4 +8,5 @@ public interface IThermometerService
     bool IsRunning { get; }
     void Start();
     void Stop();
+    Task Restart();
 }

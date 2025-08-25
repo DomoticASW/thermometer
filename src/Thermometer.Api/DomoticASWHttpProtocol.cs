@@ -37,10 +37,6 @@ public class DomoticASWHttpProtocol : ControllerBase
                     return Ok(new { Temperature = _thermometer.RequiredTemperature });
                 }
                 return BadRequest(new { cause = "Invalid input for temperature" });
-            case "unregister":
-                Console.WriteLine($"Executing action: {deviceActionId}");
-                _thermometerService.Stop();
-                return Ok();
             default:
                 return NotFound(new { cause = "Unknown action" });
         }
@@ -101,6 +97,14 @@ public class DomoticASWHttpProtocol : ControllerBase
         };
 
         return Ok(device);
+    }
+
+    [HttpPost("unregister")]
+    public IActionResult Unregister()
+    {
+        _thermometerService.Stop();
+        Console.WriteLine($"Thermometer unregistered");
+        return Ok();
     }
 
     public class ExecuteInput

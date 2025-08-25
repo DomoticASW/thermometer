@@ -20,7 +20,8 @@ The following configurations can be passed to the container as environment varia
 
 | Variable name     | Default value   | Explanation                         |
 | ----------------- | --------------- | ----------------------------------- |
-| NAME              | Thermometer-01  | thermometer name                    |
+| ID                | thermometer-01  | thermometer ID                      |
+| NAME              | Thermometer     | thermometer name                    |
 | DEVICE_PORT       | 8090            | Port used by the thermometer device |
 | SERVER_ADDRESS    | /               | Address:port of the server          |
 | DISCOVERY_ADDRESS | 255.255.255.255 | Address for discovery broadcasts    |

@@ -27,16 +27,20 @@ public class DomoticASWHttpProtocol : ControllerBase
     [HttpPost("execute/{deviceActionId}")]
     public IActionResult ExecuteAction(string deviceActionId, [FromBody] ExecuteInput input)
     {
-        Console.WriteLine($"Executing action: {deviceActionId} with input: {input?.Input}");
         switch (deviceActionId.ToLower())
         {
             case "set-temperature":
+                Console.WriteLine($"Executing action: {deviceActionId} with input: {input?.Input}");
                 if (input?.Input is JsonElement tempElement && tempElement.TryGetDouble(out double tempValue))
                 {
                     _thermometer.SetRequiredTemperature(tempValue);
                     return Ok(new { Temperature = _thermometer.RequiredTemperature });
                 }
                 return BadRequest(new { cause = "Invalid input for temperature" });
+            case "unregister":
+                Console.WriteLine($"Executing action: {deviceActionId}");
+                _thermometerService.Stop();
+                return Ok();
             default:
                 return NotFound(new { cause = "Unknown action" });
         }
@@ -54,6 +58,7 @@ public class DomoticASWHttpProtocol : ControllerBase
             _thermometerAgent.SetServerAddress(Request.HttpContext.Connection.RemoteIpAddress!.ToString(), port);
             Console.WriteLine($"Thermometer registered at {Request.HttpContext.Connection.RemoteIpAddress}:{port}");
             _thermometerAgent.Registered = true;
+            _thermometerService.Start();
         }
         var device = new
         {

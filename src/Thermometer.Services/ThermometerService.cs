@@ -51,14 +51,24 @@ public class ThermometerService : IThermometerService, IHostedService
         IsRunning = true;
         return Task.CompletedTask;
     }
-    
+
     public Task StopAsync(CancellationToken cancellationToken)
     {
         if (!IsRunning) return Task.CompletedTask;
-        
+
         _cts.Cancel();
         Thermometer.Stop();
         IsRunning = false;
         return Task.CompletedTask;
+    }
+    
+    public void Start()
+    {
+        _ = StartAsync(CancellationToken.None);
+    }
+
+    public void Stop()
+    {
+        _ = StopAsync(CancellationToken.None);
     }
 }

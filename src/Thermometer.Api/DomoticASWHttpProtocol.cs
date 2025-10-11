@@ -50,15 +50,15 @@ public class DomoticASWHttpProtocol : ControllerBase
         {
             return BadRequest(new { cause = "Invalid port number" });
         }
-        string? serverAddress = Input.GetProperty("serverAddress").GetString();
-        if (string.IsNullOrEmpty(serverAddress))
+        string? serverHost = Input.GetProperty("serverHost").GetString();
+        if (string.IsNullOrEmpty(serverHost))
         {
             return BadRequest(new { cause = "Invalid server address" });
         }
         else
         {
-            _thermometerAgent.SetServerAddress(serverAddress, port);
-            Console.WriteLine($"Thermometer registered at {serverAddress}:{port}");
+            _thermometerAgent.SetServerAddress(serverHost, port);
+            Console.WriteLine($"Thermometer registered at {serverHost}:{port}");
             _thermometerAgent.Registered = true;
         }
         var device = new
